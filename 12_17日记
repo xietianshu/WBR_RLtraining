@@ -1,0 +1,32 @@
+class LeggedRobotCfg(BaseConfig):
+    class env:
+        num_envs = 4096
+        num_observations = 27 #基本观测维度，组成是？？？
+        num_privileged_obs = (
+            num_observations + 7 * 11 + 3 + 6 * 5 + 3 + 3
+        )  # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise
+           # 扩展观测维度，组成是？？？       
+        obs_history_length = 5  # number of observations stacked together
+        obs_history_dec = 1
+        num_actions = 6
+        env_spacing = 3.0  # not used with heightfields/trimeshes
+        send_timeouts = True  # send time out information to the algorithm
+        episode_length_s = 20  # episode length in seconds
+        dof_vel_use_pos_diff = True
+        fail_to_terminal_time_s = 1
+在class Legged_Robot中，定义本体观测:27=6+6+6+3+3+3:
+  def compute_proprioception_observations(self):
+        # note that observation noise need to modified accordingly !!!
+        obs_buf = torch.cat(                                 #张量整合函数
+            (
+                # self.base_lin_vel * self.obs_scales.lin_vel,
+                self.base_ang_vel * self.obs_scales.ang_vel, #IMU角速度 3列
+                self.projected_gravity,                      #投影重力 3列
+                self.commands[:, :3] * self.commands_scale,  #命令 前3列
+                (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,# 关节位置 6列
+                self.dof_vel * self.obs_scales.dof_vel,      # 关节速度 6列
+                self.actions,                                #action 6个关节力矩指令
+            ),
+            dim=-1,
+        )
+        return obs_buf
