@@ -42,16 +42,16 @@ class LeggedRobotRough(LeggedRobot):
                     1.0,
                 )
                 * self.obs_scales.height_measurements
-            )
+            )                                                            
             self.privileged_obs_buf = torch.cat(
                 (
-                    self.base_lin_vel * self.obs_scales.lin_vel,
-                    self.obs_buf[:, :-77],
-                    self.last_actions[:, :, 0],
-                    self.last_actions[:, :, 1],
-                    self.dof_acc * self.obs_scales.dof_acc,
-                    heights,
-                    self.torques * self.obs_scales.torque,
+                    self.base_lin_vel * self.obs_scales.lin_vel,        
+                    self.obs_buf[:, :-77],                              
+                    self.last_actions[:, :, 0],                         
+                    self.last_actions[:, :, 1],                         
+                    self.dof_acc * self.obs_scales.dof_acc,             
+                    heights,                                            
+                    self.torques * self.obs_scales.torque,              
                     (self.base_mass - self.base_mass.mean()).view(self.num_envs, 1),
                     self.base_com,
                     self.default_dof_pos - self.raw_default_dof_pos,

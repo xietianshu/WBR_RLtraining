@@ -218,12 +218,12 @@ class LeggedRobot(BaseTask):
         self.time_out_buf = (
             self.episode_length_buf > self.max_episode_length
         )  # no terminal reward for time-outs
-        if self.cfg.terrain.mesh_type in ["heightfield", "trimesh"]:
-            self.edge_reset_buf = self.base_position[:, 0] > self.terrain_x_max - 1
-            self.edge_reset_buf |= self.base_position[:, 0] < self.terrain_x_min + 1
-            self.edge_reset_buf |= self.base_position[:, 1] > self.terrain_y_max - 1
-            self.edge_reset_buf |= self.base_position[:, 1] < self.terrain_y_min + 1
-        self.reset_buf = (self.fail_buf | self.time_out_buf | self.edge_reset_buf)
+        # if self.cfg.terrain.mesh_type in ["heightfield", "trimesh"]:
+        #     self.edge_reset_buf = self.base_position[:, 0] > self.terrain_x_max - 1
+        #     self.edge_reset_buf |= self.base_position[:, 0] < self.terrain_x_min + 1
+        #     self.edge_reset_buf |= self.base_position[:, 1] > self.terrain_y_max - 1
+        #     self.edge_reset_buf |= self.base_position[:, 1] < self.terrain_y_min + 1
+        self.reset_buf = (self.fail_buf | self.time_out_buf)
 
     def reset_idx(self, env_ids):
         """Reset some environments.
@@ -333,12 +333,12 @@ class LeggedRobot(BaseTask):
         obs_buf = torch.cat(
             (
                 # self.base_lin_vel * self.obs_scales.lin_vel,
-                self.base_ang_vel * self.obs_scales.ang_vel, #IMU角速度 3列
-                self.projected_gravity,                      #投影重力 3列
-                self.commands[:, :3] * self.commands_scale,  #命令 前3列
-                (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,# 关节位置 6列
-                self.dof_vel * self.obs_scales.dof_vel,      # 关节速度 6列
-                self.actions,                                #action 6个关节力矩指令
+                self.base_ang_vel * self.obs_scales.ang_vel,
+                self.projected_gravity,
+                self.commands[:, :3] * self.commands_scale,
+                (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
+                self.dof_vel * self.obs_scales.dof_vel,
+                self.actions,
             ),
             dim=-1,
         )
@@ -358,19 +358,19 @@ class LeggedRobot(BaseTask):
                 * self.obs_scales.height_measurements
             )
             self.privileged_obs_buf = torch.cat(
-                (                                                                   #WBR机器人
-                    self.base_lin_vel * self.obs_scales.lin_vel,                    #直线速度 3
-                    self.obs_buf,                                                   #基本观测 27
-                    self.last_actions[:, :, 0],                                     
-                    self.last_actions[:, :, 1],                                     #前两个时间步 2*6
-                    self.dof_acc * self.obs_scales.dof_acc,                         #关节加速度 6
-                    heights,                                                        #高度 1
-                    self.torques * self.obs_scales.torque,                          #力矩 6
-                    (self.base_mass - self.base_mass.mean()).view(self.num_envs, 1),#重塑质量 1
-                    self.base_com,                                                  #基座重心坐标 3
-                    self.default_dof_pos - self.raw_default_dof_pos,                #关节位置相对原始位置 6
-                    self.friction_coef.view(self.num_envs, 1),                      #摩擦系数 1
-                    self.restitution_coef.view(self.num_envs, 1),                   #弹性系数 1
+                (
+                    self.base_lin_vel * self.obs_scales.lin_vel,
+                    self.obs_buf,
+                    self.last_actions[:, :, 0],
+                    self.last_actions[:, :, 1],
+                    self.dof_acc * self.obs_scales.dof_acc,
+                    heights,
+                    self.torques * self.obs_scales.torque,
+                    (self.base_mass - self.base_mass.mean()).view(self.num_envs, 1),
+                    self.base_com,
+                    self.default_dof_pos - self.raw_default_dof_pos,
+                    self.friction_coef.view(self.num_envs, 1),
+                    self.restitution_coef.view(self.num_envs, 1),
                 ),
                 dim=-1,
             )

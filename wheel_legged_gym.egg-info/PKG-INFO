@@ -1,16 +1,13 @@
 Metadata-Version: 2.1
-Name: wheel_legged_gym
+Name: wheel-legged-gym
 Version: 1.0.0
 Summary: Isaac Gym environments for Wheel Legged Robots
+Home-page: UNKNOWN
 Author: Hongxi Wang
 Author-email: wanghongxi2001@outlook.com
 License: BSD-3-Clause
+Platform: UNKNOWN
 License-File: LICENSE
-Requires-Dist: isaacgym
-Requires-Dist: matplotlib
-Requires-Dist: tensorboard
-Requires-Dist: setuptools==59.5.0
-Requires-Dist: numpy>=1.16.4
-Requires-Dist: numpy<1.20.0
-Requires-Dist: GitPython
-Requires-Dist: onnx
+
+UNKNOWN
+
