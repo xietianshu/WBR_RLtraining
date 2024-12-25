@@ -1,0 +1,11 @@
+      obs_buf = torch.cat(                                 #张量整合函数
+                (
+                    # self.base_lin_vel * self.obs_scales.lin_vel,
+                    self.base_ang_vel * self.obs_scales.ang_vel, #IMU角速度 3列
+                    self.projected_gravity,                      #投影重力 3列
+                    self.commands[:, :3] * self.commands_scale,  #当前命令 前3列
+                    (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,# 关节位置 6列
+                    self.dof_vel * self.obs_scales.dof_vel,      # 关节速度 6列
+                    self.actions,                                #关节力矩 6列
+                ),
+    目前机器人仅有本体感知，因此我们想办法把本体感知的数据构建出机器人的观察(observation)
