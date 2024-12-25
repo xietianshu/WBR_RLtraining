@@ -31,7 +31,7 @@ class LeggedRobotCfg(BaseConfig):
                 dim=-1,
             )
             return obs_buf
-在class Legged_Robot中，定义如下：self.privileged_obs_buf=27 + 3 + 6 * 5 + 3 + 3
+在class Legged_Robot中，定义如下：self.privileged_obs_buf=27 +7*11 + 3 + 6 * 5 + 3 + 3
  self.privileged_obs_buf = torch.cat(
                 (                                                                   #WBR机器人
                     self.base_lin_vel * self.obs_scales.lin_vel,                    #直线速度 3
@@ -39,7 +39,7 @@ class LeggedRobotCfg(BaseConfig):
                     self.last_actions[:, :, 0],                                     
                     self.last_actions[:, :, 1],                                     #前两个时间步的动作 2*6
                     self.dof_acc * self.obs_scales.dof_acc,                         #关节加速度 6
-                    heights,                                                        #高度 1
+                    heights,                                                        #高度 77
                     self.torques * self.obs_scales.torque,                          #力矩 6
                     (self.base_mass - self.base_mass.mean()).view(self.num_envs, 1),#重塑质量 1
                     self.base_com,                                                  #基座重心坐标 3
@@ -52,11 +52,11 @@ class LeggedRobotCfg(BaseConfig):
        self.privileged_obs_buf = torch.cat(
                 (
                     self.base_lin_vel * self.obs_scales.lin_vel,        
-                    self.obs_buf[:, :-77],                                         #                                  
+                    self.obs_buf[:, :-77],                              # 去掉后面77维数据，避免和高度重复                                
                     self.last_actions[:, :, 0],                         
                     self.last_actions[:, :, 1],                         
                     self.dof_acc * self.obs_scales.dof_acc,             
-                    heights,                                            
+                    heights,                                                      # 高度信息7x11维
                     self.torques * self.obs_scales.torque,              
                     (self.base_mass - self.base_mass.mean()).view(self.num_envs, 1),
                     self.base_com,
