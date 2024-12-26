@@ -9,3 +9,15 @@
                     self.actions,                                #关节力矩 6列
                 ),
     目前机器人仅有本体感知，因此我们想办法把本体感知的数据构建出机器人的观察(observation)
+
+self.base_ang_vel是来自于LeggedRobot.root_states,是一个size为(num_envs,13)的张量，其中这13维张量包括
+（一般根据 NVIDIA Isaac Gym 和 legged_gym 的约定）：
+状态组成
+1)位置 (Position):
+表示根节点在全局坐标系中的位置 (x, y, z)。————LeggedRobot.root_states(num_envs,0:3) #第0，1，2号元素
+2)方向 (Orientation - 四元数);
+表示根节点的方向，用四元数表示 (qx, qy, qz, qw)。————LeggedRobot.root_states(num_envs,3:7) #第3，4，5，6号元素，以下以此类推
+3)线速度 (Linear Velocity);
+表示根节点在全局坐标系中的线速度 (vx, vy, vz)。————LeggedRobot.root_states(num_envs,:7:10)
+4)角速度 (Angular Velocity)
+表示根节点在全局坐标系中的角速度 (ωx, ωy, ωz)。————LeggedRobot.root_states(num_envs,10:13) 
