@@ -21,3 +21,15 @@ self.base_ang_vel是来自于LeggedRobot.root_states,是一个size为(num_envs,1
 表示根节点在全局坐标系中的线速度 (vx, vy, vz)。————LeggedRobot.root_states(num_envs,:7:10)
 4)角速度 (Angular Velocity)
 表示根节点在全局坐标系中的角速度 (ωx, ωy, ωz)。————LeggedRobot.root_states(num_envs,10:13) 
+
+这里base_ang_vel是由如下函数得到:
+ self.base_ang_vel = quat_rotate_inverse( self.base_quat, self.root_states[:, 10:13])
+其中self.base_quat = self.root_states[:, 3:7]。
+
+
+
+
+
+
+
+
